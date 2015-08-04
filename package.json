@@ -1,0 +1,29 @@
+{
+	"name": "comments",
+	"version": "1.0.0",
+	"author": "PeterCxy",
+	"description": "Simple comment system based on Redis",
+	"license": "GPL-3.0",
+	"homepage": "https://github.com/PeterCxy/node-comments",
+	"keywords": [
+		"redis",
+		"comment"
+	],
+	"devDependencies": {
+		"coffee-script": ">=1.9.3"
+	},
+	"dependencies": {
+		"korubaku": ">=1.0.1",
+		"restify": ">=3.0.3",
+		"request": "*",
+		"redis": ">=0.12.1",
+		"md5": ">=2.0.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/PeterCxy/node-comments.git"
+	},
+	"scripts": {
+		"prepublish": "cake build"
+	}
+}
