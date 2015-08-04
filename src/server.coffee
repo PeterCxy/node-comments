@@ -42,6 +42,10 @@ newComment = (req, res) ->
 			date: req.params.date
 
 		cmt.reply = req.params.reply if req.params.reply
+
+		# Escape html tags
+		cmt.content = cmt.content.replace /</g, '&lt;'
+		cmt.content = cmt.content.replace />/g, '&gt;'
 	
 		hash = md5 req.params.email
 
