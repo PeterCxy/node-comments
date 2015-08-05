@@ -43,6 +43,7 @@ newComment = (req, res) ->
 			nick: req.params.nick
 			content: req.params.content
 			date: req.params.date
+			post: req.params.post
 
 		cmt.reply = req.params.reply if req.params.reply
 
