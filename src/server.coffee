@@ -46,6 +46,10 @@ newComment = (req, res) ->
 		# Escape html tags
 		cmt.content = cmt.content.replace /</g, '&lt;'
 		cmt.content = cmt.content.replace />/g, '&gt;'
+
+		# Auto-link
+		cmt.content = cmt.content.replace /(?![^<]*>|[^<>]*<\/)((https?:)\/\/[a-z0-9&#=.\/\-?_]+)/gi, "<a href='$1'>$1</a>"
+		console.log cmt.content
 	
 		hash = md5 req.params.email
 
