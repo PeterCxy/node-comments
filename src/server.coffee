@@ -35,6 +35,9 @@ postPrefix = "post-cmts-"
 
 newComment = (req, res) ->
 	korubaku (ko) =>
+		# Use timestamp as IDs
+		id = new Date().getTime()
+
 		cmt =
 			email: req.params.email
 			nick: req.params.nick
@@ -62,23 +65,16 @@ newComment = (req, res) ->
 			console.log 'Gravatar not found.'
 			cmt.hash = hash + '?d=identicon'
 
-		[err, id] = yield db.zcard commentSet, ko.raw()
-		if err?
-			id = 1
+		[err, score] = yield db.zscore commentSet, JSON.stringify(cmt), ko.raw()
+		console.log score
+		if score is null
+			[err] = yield db.zadd commentSet, id, JSON.stringify(cmt), ko.raw()
+
+			if !err?
+				setName = "#{postPrefix}#{req.params.post}"
+				[err] = yield db.zadd setName, id, id, ko.raw()
 		else
-			id += 1
-		console.log id
-
-		[err] = yield db.zadd commentSet, id, JSON.stringify(cmt), ko.raw()
-
-		if !err?
-			setName = "#{postPrefix}#{req.params.post}"
-			[err, num] = yield db.zcard setName, ko.raw()
-			if err?
-				num = 1
-			else
-				num += 1
-			[err] = yield db.zadd setName, num + 1, id, ko.raw()
+			id = score
 
 		res.writeHead 200
 		res.write(if !err? then "#{id}" else JSON.stringify(err))
@@ -94,7 +90,7 @@ getComments = (req, res) ->
 		for r in reply
 			r = parseInt r
 			[err, [cmt]] = yield db.zrangebyscore commentSet, r, r, ko.raw()
-			if !err?
+			if !err? and cmt?
 				cmt = JSON.parse cmt
 				delete cmt.email
 				cmt.id = r
