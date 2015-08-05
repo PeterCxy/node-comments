@@ -78,7 +78,7 @@ newComment = (req, res) ->
 			[err] = yield db.zadd setName, num + 1, id, ko.raw()
 
 		res.writeHead 200
-		res.write(if !err? then 'OK' else JSON.stringify(err))
+		res.write(if !err? then id else JSON.stringify(err))
 		res.end()
 
 getComments = (req, res) ->
