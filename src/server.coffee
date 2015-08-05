@@ -53,11 +53,14 @@ newComment = (req, res) ->
 	
 		hash = md5 req.params.email
 
-		[_, response, _] = yield request "https://www.gravatar.com/avatar/#{hash}", ko.raw()
+		[_, response, _] = yield request "https://www.gravatar.com/avatar/#{hash}?d=404", ko.raw()
 
 		if response.statusCode is 200
 			console.log 'Gravatar found.'
 			cmt.hash = hash
+		else
+			console.log 'Gravatar not found.'
+			cmt.hash = hash + '?d=identicon'
 
 		[err, id] = yield db.zcard commentSet, ko.raw()
 		if err?
